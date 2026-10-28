@@ -26,42 +26,24 @@ body {
   display: inline;
   color: #fff;
 }
-.unitbox-label {
-  display: inline;
+.units {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
 }
-.unitbox {
-  display: inline;
-  font-family: sans-serif;
-  line-height: 1.125;
-  padding: 0 0.75em 0 0;
-  margin: 0;
-  color: #CB0509;
-  font-size: 2em;
+.unit {
+  font-size: 1.25rem;
   font-weight: 700;
-  border-radius: 0;
-  border-left: none;
-  border-top: none;
-  border-right: none;
-  border-bottom: 1px solid #CB0509;
-
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: #000;
-	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23CB0509%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-	background-repeat: no-repeat, repeat;
-	/* arrow icon position (1em from the right, 50% vertical) , then gradient position*/
-	background-position: right 0em top 50%, 0 0;
-	/* icon size, then gradient */
-  background-size: .45em auto, 100%;
+  color: #CB0509;
+  text-decoration: none;
+  border: 1px solid #CB0509;
+  padding: 0.2em 0.7em;
 }
-/* Hide arrow icon in IE browsers */
-.unitbox::-ms-expand {
-	display: none;
-}
-.unitbox option {
-  font-weight: normal;
-  font-size: 1em;
+.unit:hover,
+.unit.is-active {
+  background-color: #CB0509;
+  color: #fff;
 }
 
 
@@ -75,6 +57,39 @@ body {
 }
 .dob input {
   font: inherit;
+}
+.charts {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  margin: 2rem auto;
+}
+.panel {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.charts.years .panel { max-width: 380px; }
+.charts.months .panel { max-width: 504px; }
+.charts.weeks .panel { max-width: 624px; }
+.panel-title {
+  font-size: 1rem;
+  font-weight: normal;
+  text-align: center;
+  color: #aaaaaa;
+  margin: 0 0 1rem;
+}
+.panel .chart {
+  margin: 0 auto 1rem;
+}
+@media (max-width: 800px) {
+  .charts {
+    flex-direction: column;
+    align-items: center;
+  }
+  .panel {
+    width: 100%;
+  }
 }
 .chart {
   position: relative;
@@ -272,11 +287,6 @@ body {
     color-adjust: exact !important;
   }
 
-  .unitbox {
-    border-bottom: none;
-    padding: 0;
-    background-image: none;
-  }
 
   .print-hide {
     display: none;

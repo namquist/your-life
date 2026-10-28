@@ -3,14 +3,16 @@
  */
 (function () {
   var birthdayEl = document.getElementById('birthday'),
-    unitboxEl = document.getElementById('unitbox'),
-    unitText = document.querySelector('.unitbox-label').textContent.toLowerCase(),
-    items = document.querySelectorAll('.chart li'),
-    itemCount,
-    COLOR = 'red';
+    unitText = document.querySelector('.unit.is-active').textContent.trim().toLowerCase(),
+    charts = document.querySelectorAll('.chart'),
+    COLOR = 'red',
+    // Felt time: a year counts for its share of the life lived so far (Paul Janet's
+    // rule), so felt age grows with the log of real age. The count starts at the age
+    // clear memory usually begins and ends at the lifespan the charts assume.
+    FELT_START_AGE = 6,
+    LIFESPAN = 90;
 
   // Set listeners
-  unitboxEl.addEventListener('change', _handleUnitChange);
   birthdayEl.addEventListener('input', _handleDateChange);
   birthdayEl.addEventListener('change', _handleDateChange);
 
@@ -18,10 +20,6 @@
   _loadStoredValueOfDOB();
 
   // Event Handlers
-  function _handleUnitChange(e) {
-    window.location = '' + e.currentTarget.value + '.html';
-  }
-
   function _handleDateChange(e) {
 
     // Save date of birth in local storage
@@ -29,11 +27,16 @@
       localStorage.setItem("DOB", JSON.stringify({ date: birthdayEl.value }));
     } catch (err) {}
 
-    if (_dateIsValid()) {
-      itemCount = calculateElapsedTime();
-      _repaintItems(itemCount);
-    } else {
-      _repaintItems(0);
+    var valid = _dateIsValid(), elapsed = valid ? calculateElapsedTime() : 0, i, items;
+    for (i = 0; i < charts.length; i++) {
+      items = charts[i].querySelectorAll('li');
+      if (!valid) {
+        _repaintItems(items, 0);
+      } else if (charts[i].getAttribute('data-scale') === 'felt') {
+        _repaintItems(items, calculateFeltCount(items.length));
+      } else {
+        _repaintItems(items, elapsed);
+      }
     }
   }
 
@@ -83,6 +86,13 @@
     return elapsedTime;
   }
 
+  function calculateFeltCount(totalCells) {
+    var ageInYears = (new Date().getTime() - _getDateOfBirth().getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+    var feltShare = ageInYears <= FELT_START_AGE ? 0 :
+      Math.min(1, Math.log(ageInYears / FELT_START_AGE) / Math.log(LIFESPAN / FELT_START_AGE));
+    return Math.floor(feltShare * totalCells);
+  }
+
   function _dateIsValid() {
     return /^\d{4}-\d{2}-\d{2}$/.test(birthdayEl.value) && !isNaN(_getDateOfBirth().getTime());
   }
@@ -93,7 +103,7 @@
     return new Date(+p[0], +p[1] - 1, +p[2]);
   }
 
-  function _repaintItems(number) {
+  function _repaintItems(items, number) {
     for (var i = 0; i < items.length; i++) {
       if (i < number) {
         items[i].style.backgroundColor = COLOR;
