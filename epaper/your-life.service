@@ -1,0 +1,18 @@
+# systemd unit for the e-paper display. Install with:
+#   sudo cp epaper/your-life.service /etc/systemd/system/
+#   sudo systemctl enable --now your-life
+[Unit]
+Description=Your Life e-paper frame
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/your-life
+ExecStart=/usr/bin/python3 /home/pi/your-life/epaper/show_frame.py
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

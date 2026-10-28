@@ -5,12 +5,25 @@
   var birthdayEl = document.getElementById('birthday'),
     unitText = document.querySelector('.unit.is-active').textContent.trim().toLowerCase(),
     charts = document.querySelectorAll('.chart'),
-    COLOR = 'red',
+    // Address options, used by a display that renders the page on its own:
+    //   ?dob=1995-08-15   fills in the birthday
+    //   ?epaper=1         black on white, no controls, sized for a panel
+    //   ?scale=calendar   show only the calendar grid (or scale=felt)
+    PARAMS = _readParams(),
+    EPAPER = PARAMS.epaper === '1',
+    COLOR = EPAPER ? '#000' : 'red',
     // Felt time: a year counts for its share of the life lived so far (Paul Janet's
     // rule), so felt age grows with the log of real age. The count starts at the age
     // clear memory usually begins and ends at the lifespan the charts assume.
     FELT_START_AGE = 6,
     LIFESPAN = 90;
+
+  if (EPAPER) {
+    document.body.classList.add('epaper');
+    if (PARAMS.scale === 'calendar' || PARAMS.scale === 'felt') {
+      document.body.classList.add('scale-' + PARAMS.scale);
+    }
+  }
 
   // Set listeners
   birthdayEl.addEventListener('input', _handleDateChange);
@@ -113,8 +126,24 @@
     }
   }
 
+  function _readParams() {
+    var out = {}, pairs = (window.location.search || '').replace(/^\?/, '').split('&'), i, kv;
+    for (i = 0; i < pairs.length; i++) {
+      kv = pairs[i].split('=');
+      if (kv[0]) { out[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || ''); }
+    }
+    return out;
+  }
+
   function _loadStoredValueOfDOB() {
     var DOB = null;
+
+    // A birthday in the address wins over the saved one.
+    if (/^\d{4}-\d{2}-\d{2}$/.test(PARAMS.dob || '')) {
+      birthdayEl.value = PARAMS.dob;
+      _handleDateChange();
+      return;
+    }
     try {
       DOB = JSON.parse(localStorage.getItem('DOB'));
     } catch (err) {}

@@ -13,6 +13,15 @@
     }
     .charts { gap: 6rem; }
     .panel-title { margin-bottom: 3.5rem; }
+    body.epaper { padding-left: calc(3rem + 16px); }
+    body.epaper .charts { gap: 5rem; margin-top: 3rem; }
+    body.epaper .panel-title { display: none; }
+    body.epaper .charts.weeks .panel { max-width: 230px; }
+    body.epaper.scale-calendar .charts.weeks .panel,
+    body.epaper.scale-felt .charts.weeks .panel { max-width: 250px; }
+    /* At this size a 1px border would make the cells taller than wide; draw the
+       outline inside the cell instead so 90 rows fit the panel. */
+    body.epaper .charts.weeks .chart li { border: 0; box-shadow: inset 0 0 0 1px #000; }
   </style>
 </head>
 <body>

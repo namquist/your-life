@@ -1,0 +1,58 @@
+name: Render e-paper frames
+
+# Renders months.html, years.html and weeks.html in e-paper mode at 800x480
+# and publishes the PNGs on a branch called "frame", which the display downloads.
+# Needs one repository secret, DOB, in the form YYYY-MM-DD.
+# Optional repository variable TZ (for example America/New_York) so "today" is
+# your day, not the runner's; the default schedule below is 08:20 UTC.
+
+on:
+  schedule:
+    - cron: "20 8 * * *"
+  workflow_dispatch:
+  push:
+    branches: [gh-pages]
+    paths:
+      - "*.html"
+      - "your-life.css"
+      - "your-life.js"
+      - ".github/workflows/frame.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    env:
+      TZ: ${{ vars.TZ || 'UTC' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render the three views
+        env:
+          DOB: ${{ secrets.DOB }}
+        run: |
+          if [ -z "$DOB" ]; then
+            echo "Add a repository secret named DOB with your birthday as YYYY-MM-DD."
+            exit 1
+          fi
+          mkdir -p out
+          for unit in months years weeks; do
+            google-chrome --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --hide-scrollbars --force-device-scale-factor=1 --window-size=800,480 \
+              --virtual-time-budget=5000 --screenshot="out/$unit.png" \
+              "file://$PWD/$unit.html?epaper=1&dob=$DOB"
+          done
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > out/rendered-at.txt
+          ls -la out
+
+      - name: Publish to the frame branch
+        run: |
+          cd out
+          git init -q -b frame
+          git config user.name "frame-bot"
+          git config user.email "frame-bot@users.noreply.github.com"
+          git add .
+          git commit -q -m "Frames for $(date +%F)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" frame
