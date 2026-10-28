@@ -14,6 +14,10 @@
   </style>
 </head>
 <body>
+  <form class="dob" action="#">
+    <label for="birthday" class="instruction">Birthday</label>
+    <input type="date" id="birthday" required>
+  </form>
   <div class="title-box">
     <h1 class="title">Your Life in <label for="unitbox" class="unitbox-label visuallyhidden">Weeks</label></h1>
     <select name="unitbox" class="unitbox" id="unitbox" required>
@@ -22,28 +26,6 @@
       <option value="weeks" selected>Weeks</option>
     </select>
   </div>
-  <form class="dob" action="#">
-    <p class="instruction"><span class="print-hide">Enter your </span>Date of Birth</p>
-    <label for="month" class="visuallyhidden">Month</label>
-    <select name="month" class="month" id="month" required>
-      <option value="0">January</option>
-      <option value="1">February</option>
-      <option value="2">March</option>
-      <option value="3">April</option>
-      <option value="4">May</option>
-      <option value="5">June</option>
-      <option value="6">July</option>
-      <option value="7">August</option>
-      <option value="8">September</option>
-      <option value="9">October</option>
-      <option value="10">November</option>
-      <option value="11">December</option>
-    </select>
-    <label for="day" class="visuallyhidden">Day</label>
-    <input type="text" class="day" id="day" placeholder="31" pattern="\d{0,2}" required/>
-    <label for="year" class="visuallyhidden">Year</label>
-    <input type="text" class="year" id="year" placeholder="1999" pattern="\d{4}" required/>
-  </form>
   <ol class="chart weeks group">
     <div class="x-axis">
       <label class="weeks--x-label">Week of the Year<img src="images/arrow-right.svg" class="weeks--x-arrow"/></label>

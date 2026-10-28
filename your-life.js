@@ -2,32 +2,17 @@
  * Interactive form and chart events / logic.
  */
 (function () {
-  var yearEl = document.getElementById('year'),
-    monthEl = document.getElementById('month'),
-    dayEl = document.getElementById('day'),
+  var birthdayEl = document.getElementById('birthday'),
     unitboxEl = document.getElementById('unitbox'),
     unitText = document.querySelector('.unitbox-label').textContent.toLowerCase(),
     items = document.querySelectorAll('.chart li'),
     itemCount,
-    COLOR = 'red',
-    KEY = {
-      UP: 38,
-      DOWN: 40
-    };
+    COLOR = 'red';
 
   // Set listeners
   unitboxEl.addEventListener('change', _handleUnitChange);
-  yearEl.addEventListener('input', _handleDateChange);
-  yearEl.addEventListener('keydown', _handleUpdown);
-  yearEl.addEventListener('blur', _unhideValidationStyles);
-  monthEl.addEventListener('change', _handleDateChange);
-  monthEl.addEventListener('keydown', _handleUpdown);
-  dayEl.addEventListener('input', _handleDateChange);
-  dayEl.addEventListener('blur', _unhideValidationStyles);
-  dayEl.addEventListener('keydown', _handleUpdown);
-
-  // Ensure the month is unselected by default.
-  monthEl.selectedIndex = -1;
+  birthdayEl.addEventListener('input', _handleDateChange);
+  birthdayEl.addEventListener('change', _handleDateChange);
 
   // Load default values
   _loadStoredValueOfDOB();
@@ -40,11 +25,9 @@
   function _handleDateChange(e) {
 
     // Save date of birth in local storage
-    localStorage.setItem("DOB", JSON.stringify({
-      month: monthEl.value,
-      year: yearEl.value,
-      day: dayEl.value
-    }));
+    try {
+      localStorage.setItem("DOB", JSON.stringify({ date: birthdayEl.value }));
+    } catch (err) {}
 
     if (_dateIsValid()) {
       itemCount = calculateElapsedTime();
@@ -52,29 +35,6 @@
     } else {
       _repaintItems(0);
     }
-  }
-
-  function _handleUpdown(e) {
-    var newNum;
-    // A crossbrowser keycode option.
-    thisKey = e.keyCode || e.which;
-    if (e.target.checkValidity()) {
-      if (thisKey === KEY.UP) {
-        newNum = parseInt(e.target.value, 10);
-        e.target.value = newNum += 1;
-        // we call the date change function manually because the input event isn't
-        // triggered by arrow keys, or by manually setting the value, as we've done.
-        _handleDateChange();
-      } else if (thisKey === KEY.DOWN) {
-        newNum = parseInt(e.target.value, 10);
-        e.target.value = newNum -= 1;
-        _handleDateChange();
-      }
-    }
-  }
-
-  function _unhideValidationStyles(e) {
-    e.target.classList.add('touched');
   }
 
   function calculateElapsedTime() {
@@ -90,9 +50,9 @@
         // with a diffing strategy will result in build-up over time. Instead, we'll add up
         // 52 per elapsed full year, and only diff the weeks on the current partial year.
         var elapsedYears = (new Date(diff).getUTCFullYear() - 1970);
-        var isThisYearsBirthdayPassed = (currentDate.getTime() > new Date(currentDate.getUTCFullYear(), monthEl.value, dayEl.value).getTime());
+        var isThisYearsBirthdayPassed = (currentDate.getTime() > new Date(currentDate.getUTCFullYear(), dateOfBirth.getMonth(), dateOfBirth.getDate()).getTime());
         var birthdayYearOffset = isThisYearsBirthdayPassed ? 0 : 1;
-        var dateOfLastBirthday = new Date(currentDate.getUTCFullYear() - birthdayYearOffset, monthEl.value, dayEl.value);
+        var dateOfLastBirthday = new Date(currentDate.getUTCFullYear() - birthdayYearOffset, dateOfBirth.getMonth(), dateOfBirth.getDate());
         var elapsedDaysSinceLastBirthday = Math.floor((currentDate.getTime() - dateOfLastBirthday.getTime()) / (1000 * 60 * 60 * 24));
         var elapsedWeeks = (elapsedYears * 52) + Math.floor(elapsedDaysSinceLastBirthday / 7);
         elapsedTime = elapsedWeeks;
@@ -124,11 +84,13 @@
   }
 
   function _dateIsValid() {
-    return monthEl.checkValidity() && dayEl.checkValidity() && yearEl.checkValidity();
+    return /^\d{4}-\d{2}-\d{2}$/.test(birthdayEl.value) && !isNaN(_getDateOfBirth().getTime());
   }
 
   function _getDateOfBirth() {
-    return new Date(yearEl.value, monthEl.value, dayEl.value);
+    // Parse the parts ourselves so the date is local midnight, not UTC.
+    var p = birthdayEl.value.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]);
   }
 
   function _repaintItems(number) {
@@ -142,23 +104,26 @@
   }
 
   function _loadStoredValueOfDOB() {
-    var DOB = JSON.parse(localStorage.getItem('DOB'));
+    var DOB = null;
+    try {
+      DOB = JSON.parse(localStorage.getItem('DOB'));
+    } catch (err) {}
 
     if (!DOB) {
       return;
     }
 
-    if (DOB.month >= 0 && DOB.month < 12) {
-      monthEl.value = DOB.month
-    }
-
-    if (DOB.year) {
-      yearEl.value = DOB.year
-    }
-
-    if (DOB.day > 0 && DOB.day < 32) {
-      dayEl.value = DOB.day
+    if (DOB.date) {
+      birthdayEl.value = DOB.date;
+    } else if (DOB.year && DOB.month >= 0 && DOB.day > 0) {
+      // A value saved by the old three-field form.
+      birthdayEl.value = DOB.year + '-' + _pad(+DOB.month + 1) + '-' + _pad(DOB.day);
     }
     _handleDateChange();
+  }
+
+  function _pad(n) {
+    n = String(n);
+    return n.length < 2 ? '0' + n : n;
   }
 })();

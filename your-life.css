@@ -12,6 +12,7 @@ body {
   margin: 8px; /* for page padding on mobile */
   background-color: #000;
   color: #fff;
+  color-scheme: dark; /* native date box in dark colours */
 }
 
 /**
@@ -65,23 +66,15 @@ body {
 
 
 .dob {
-  text-align: center;
+  text-align: left;
+  margin: 0;
+  font-size: 0.9em;
 }
 .instruction {
-  font-size: 0.9em;
-  margin-bottom: 0.3rem;
+  margin-right: 0.4em;
 }
-.month {
-  padding: 1.25px;
-}
-.day {
-  width: 2em;
-}
-.year {
-  width: 3em;
-}
-input:required:invalid.touched {
-  border: 2px solid red;
+.dob input {
+  font: inherit;
 }
 .chart {
   position: relative;
@@ -283,18 +276,6 @@ input:required:invalid.touched {
     border-bottom: none;
     padding: 0;
     background-image: none;
-  }
-
-  .month {
-    appearance: none;
-    width: 96px;
-    font-size: 18px;
-  }
-  .day {
-    font-size: 18px;
-  }
-  .year {
-    font-size: 18px;
   }
 
   .print-hide {
