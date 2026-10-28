@@ -136,7 +136,7 @@ body {
 }
 
 /* YEARS */
-.years {
+.chart.years {
   max-width: 380px; /* 38px per year * 10years = 380px */
 }
 .years > li {
@@ -151,7 +151,7 @@ body {
 }
 
 /* MONTHS */
-.months {
+.chart.months {
   max-width: 504px; /* 14px per month * 36 months = 504px */
 }
 .months > li {
@@ -164,7 +164,7 @@ body {
 }
 
 /* WEEKS */
-.weeks {
+.chart.weeks {
   max-width: 624px; /* 12px per week * 52weeks = 624px */
 }
 .weeks > li {
@@ -259,6 +259,11 @@ body.epaper {
   color-scheme: light;
   margin: 0;
   padding: 12px 16px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 body.epaper .dob,
 body.epaper .credits,
@@ -272,7 +277,7 @@ body.epaper .title-box {
 }
 body.epaper .title {
   color: #000;
-  font-size: 1.5em;
+  font-size: max(1.5em, 4vh);
 }
 body.epaper .units {
   margin-left: 0.3em;
@@ -283,7 +288,7 @@ body.epaper .unit.is-active {
   padding: 0;
   background: none;
   color: #000;
-  font-size: 1.5em;
+  font-size: max(1.5em, 4vh);
 }
 body.epaper .charts {
   flex-direction: row;
@@ -296,14 +301,16 @@ body.epaper .panel {
 }
 body.epaper .panel-title {
   color: #000;
-  font-size: 0.9rem;
+  font-size: max(0.9rem, 2.4vh);
   margin-bottom: 0.4rem;
 }
 body.epaper .chart {
   margin: 0 auto;
+  max-width: none; /* the grid may grow with the display */
 }
 body.epaper .chart li {
   border-color: #000;
+  border-width: max(1px, 0.15vh);
 }
 body.epaper .x-axis .markers,
 body.epaper .y-axis .markers,
@@ -311,9 +318,48 @@ body.epaper .weeks--x-label,
 body.epaper .weeks--y-label {
   color: #000;
 }
+body.epaper .charts.months .panel,
+body.epaper .charts.years .panel {
+  max-width: min(46vw, 92vh);
+}
 body.epaper.scale-calendar .panel:nth-child(2),
 body.epaper.scale-felt .panel:nth-child(1) {
   display: none;
+}
+/* A tall display, such as a 30 x 50 inch piece: the grids stack and everything
+   scales with the width. Weeks stays side by side because each grid is tall. */
+@media (orientation: portrait) {
+  body.epaper {
+    padding: 3vw 4vw;
+  }
+  body.epaper .title,
+  body.epaper .unit.is-active {
+    font-size: 4.5vw;
+  }
+  body.epaper .charts {
+    flex-direction: column;
+    align-items: center;
+    gap: 3vw;
+    margin-top: 2vw;
+  }
+  body.epaper .charts.weeks {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 6vw;
+  }
+  body.epaper .panel {
+    width: 100%;
+  }
+  body.epaper .charts.months .panel { max-width: min(86vw, 52vh); }
+  body.epaper .charts.years .panel { max-width: min(86vw, 48vh); }
+  body.epaper .charts.weeks .panel { max-width: 40vw; }
+  body.epaper .panel-title {
+    font-size: 2.2vw;
+    margin-bottom: 1vw;
+  }
+  body.epaper .chart li {
+    border-width: max(1px, 0.12vw);
+  }
 }
 
 /**
