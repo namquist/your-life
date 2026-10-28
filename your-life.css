@@ -10,6 +10,8 @@ html {
 body {
   font-family: Helvetica, Ariel, sans-serif;
   margin: 8px; /* for page padding on mobile */
+  background-color: #000;
+  color: #fff;
 }
 
 /**
@@ -21,7 +23,7 @@ body {
 }
 .title {
   display: inline;
-  color: #000080;
+  color: #fff;
 }
 .unitbox-label {
   display: inline;
@@ -44,7 +46,7 @@ body {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  background-color: #fff;
+  background-color: #000;
 	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23CB0509%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
 	background-repeat: no-repeat, repeat;
 	/* arrow icon position (1em from the right, 50% vertical) , then gradient position*/
@@ -96,7 +98,7 @@ input:required:invalid.touched {
 .x-axis .markers,
 .y-axis .markers {
   font-size: 0.8rem;
-  color: black;
+  color: #fff;
 }
 .credits {
   font-size: 0.8rem;
@@ -130,7 +132,7 @@ input:required:invalid.touched {
   max-width: 380px; /* 38px per year * 10years = 380px */
 }
 .years > li {
-  border: 1px solid black;
+  border: 1px solid #fff;
   width: 5.789473684%; /* 22px/380px */
   /*  For border-box sizing, width includes borders. Thus a         //
   //  22px width is a like a padding of 20px with two 1px borders.  */
@@ -145,7 +147,7 @@ input:required:invalid.touched {
   max-width: 504px; /* 14px per month * 36 months = 504px */
 }
 .months > li {
-  border: 1px solid black;
+  border: 1px solid #fff;
   width: 2.380952381%; /* 12px/504px */
   padding-bottom: 1.984126984%; /* 10px/504px */
   margin: .198412698%; /* 1px/504px */
@@ -158,18 +160,18 @@ input:required:invalid.touched {
   max-width: 624px; /* 12px per week * 52weeks = 624px */
 }
 .weeks > li {
-  border: 1px solid black;
+  border: 1px solid #fff;
   width: 1.282051282%; /* 8px/624px */
   padding-bottom: .961538462%; /* 6px/624px */
   margin: .320512821%; /* 2px/624px */
   float: left;
 }
 .weeks--x-label {
-  color: #000080;
+  color: #fff;
   font-size: 1.25rem;
 }
 .weeks--y-label {
-  color: #000080;
+  color: #fff;
   transform: rotate(-90deg);
   font-size: 1.25rem;
   position: absolute;
