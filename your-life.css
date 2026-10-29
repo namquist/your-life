@@ -9,10 +9,10 @@ html {
 }
 body {
   font-family: Helvetica, Ariel, sans-serif;
-  margin: 8px; /* for page padding on mobile */
-  background-color: #000;
-  color: #fff;
-  color-scheme: dark; /* native date box in dark colours */
+  margin: 8px 24px; /* the same gutter on both sides */
+  background-color: #e4e1d8; /* the resting grey-white of an e-paper panel, warm and dim */
+  color: #000;
+  color-scheme: light;
 }
 
 /**
@@ -24,7 +24,7 @@ body {
 }
 .title {
   display: inline;
-  color: #fff;
+  color: #000;
 }
 .units {
   display: inline-flex;
@@ -35,15 +35,16 @@ body {
 .unit {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #CB0509;
+  color: #000;
   text-decoration: none;
-  border: 1px solid #CB0509;
+  border: 1px solid #000;
   padding: 0.2em 0.7em;
 }
-.unit:hover,
+.unit:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
 .unit.is-active {
-  background-color: #CB0509;
-  color: #fff;
+  box-shadow: inset 0 0 0 1px #000; /* a 2px border, no layout shift */
 }
 
 
@@ -57,6 +58,8 @@ body {
 }
 .dob input {
   font: inherit;
+  background-color: inherit;
+  color: inherit;
 }
 .charts {
   display: flex;
@@ -69,20 +72,40 @@ body {
   flex: 1 1 0;
   min-width: 0;
 }
-.charts.years .panel { max-width: 380px; }
-.charts.months .panel { max-width: 504px; }
-.charts.weeks .panel { max-width: 624px; }
+/* Each panel keeps the same room on both sides; the age ticks sit in the left one. */
+.panel { padding: 0 2.6rem; }
+.charts.years .panel { max-width: calc(380px + 5.2rem); }
+.charts.months .panel { max-width: calc(504px + 5.2rem); }
+.charts.weeks .panel { max-width: calc(624px + 5.2rem); }
+.ticks {
+  position: absolute;
+  top: 0;
+  left: -2.6rem;
+  width: 2rem;
+  height: 100%;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.ticks span {
+  position: absolute;
+  right: 0;
+  white-space: nowrap;
+  transform: translateY(-50%); /* centred on the row boundary it marks */
+}
 .panel-title {
   font-size: 1rem;
   font-weight: normal;
   text-align: center;
-  color: #aaaaaa;
+  color: #000;
   margin: 0 0 1rem;
 }
 .panel .chart {
   margin: 0 auto 1rem;
 }
 @media (max-width: 800px) {
+  body {
+    margin: 8px;
+  }
   .charts {
     flex-direction: column;
     align-items: center;
@@ -97,27 +120,16 @@ body {
   padding: 0;
   list-style-type: none;
 }
-.x-axis {
-  position: absolute;
-  top: -2.75em;
-  height: 2.75em;
-  width: 100%;
-}
-.x-axis .markers,
-.y-axis .markers {
-  font-size: 0.8rem;
-  color: #fff;
-}
 .credits {
   font-size: 0.8rem;
   text-align: center;
-  color: #aaaaaa;
+  color: #000;
   padding-bottom: 1rem;
 }
 .credits a:link,
 .credits a:hover,
 .credits a:visited {
-  color: #aaaaaa;
+  color: #000;
 }
 
 
@@ -140,14 +152,13 @@ body {
   max-width: 380px; /* 38px per year * 10years = 380px */
 }
 .years > li {
-  border: 1px solid #fff;
+  border: 1px solid #000;
   width: 5.789473684%; /* 22px/380px */
   /*  For border-box sizing, width includes borders. Thus a         //
   //  22px width is a like a padding of 20px with two 1px borders.  */
   padding-bottom: 5.263157895%; /* 20px/380px */
   margin: 2.105263158%; /* 8px/380px */
   float: left;
-  transform: rotate(45deg);
 }
 
 /* MONTHS */
@@ -155,11 +166,10 @@ body {
   max-width: 504px; /* 14px per month * 36 months = 504px */
 }
 .months > li {
-  border: 1px solid #fff;
+  border: 1px solid #000;
   width: 2.380952381%; /* 12px/504px */
   padding-bottom: 1.984126984%; /* 10px/504px */
   margin: .198412698%; /* 1px/504px */
-  border-radius: 50%;
   float: left;
 }
 
@@ -168,85 +178,11 @@ body {
   max-width: 624px; /* 12px per week * 52weeks = 624px */
 }
 .weeks > li {
-  border: 1px solid #fff;
+  border: 1px solid #000;
   width: 1.282051282%; /* 8px/624px */
   padding-bottom: .961538462%; /* 6px/624px */
   margin: .320512821%; /* 2px/624px */
   float: left;
-}
-.weeks--x-label {
-  color: #fff;
-  font-size: 1.25rem;
-}
-.weeks--y-label {
-  color: #fff;
-  transform: rotate(-90deg);
-  font-size: 1.25rem;
-  position: absolute;
-  left: -118px;
-  top: 78px;
-}
-.weeks--x-arrow {
-  padding-left: 10px;
-  vertical-align: bottom;
-}
-@media (max-width: 350px) {
-  .weeks--x-arrow {
-    display: none;
-  }
-}
-.weeks--y-arrow {
-  padding-right: 10px;
-  vertical-align: bottom;
-}
-.weeks--x-markers span {
-  position: absolute;
-  bottom: 0;
-}
-/* The year is divided into 52 weeks, so the % marker location //
-// can be found at (1/52)n (where n is the week number). We    //
-// must offset by 1 because we start counting at 1, so the     //
-// final equation is (n/52)-(1/52)                             */
-.weeks--x-markers span:nth-of-type(1) { left: 0;             }
-.weeks--x-markers span:nth-of-type(2) { left: 7.6923076920%; }
-.weeks--x-markers span:nth-of-type(3) { left: 17.307692308%; }
-.weeks--x-markers span:nth-of-type(4) { left: 26.923076923%; }
-.weeks--x-markers span:nth-of-type(5) { left: 36.538461538%; }
-.weeks--x-markers span:nth-of-type(6) { left: 46.153846154%; }
-.weeks--x-markers span:nth-of-type(7) { left: 55.769230769%; }
-.weeks--x-markers span:nth-of-type(8) { left: 65.384615385%; }
-.weeks--x-markers span:nth-of-type(9) { left: 75%;           }
-.weeks--x-markers span:nth-of-type(10) { left: 84.615384615%; }
-.weeks--x-markers span:nth-of-type(11) { left: 94.230769231%; }
-
-.weeks--y-markers span {
-  position: absolute;
-  left: -1.25em;
-}
-
-.weeks--y-markers span:nth-of-type(1) { top: 0; } /* (n/90) */
-.weeks--y-markers span:nth-of-type(2) { top: 5.555555556%; }
-.weeks--y-markers span:nth-of-type(3) { top: 11.111111111%; }
-.weeks--y-markers span:nth-of-type(4) { top: 16.666666667%; }
-.weeks--y-markers span:nth-of-type(5) { top: 22.222222222%; }
-.weeks--y-markers span:nth-of-type(6) { top: 27.777777778%; }
-.weeks--y-markers span:nth-of-type(7) { top: 33.333333333%; }
-.weeks--y-markers span:nth-of-type(8) { top: 38.888888889%; }
-.weeks--y-markers span:nth-of-type(9) { top: 44.444444444%; }
-.weeks--y-markers span:nth-of-type(10) { top: 50%; }
-.weeks--y-markers span:nth-of-type(11) { top: 55.555555556%; }
-.weeks--y-markers span:nth-of-type(12) { top: 61.111111111%; }
-.weeks--y-markers span:nth-of-type(13) { top: 66.666666667%; }
-.weeks--y-markers span:nth-of-type(14) { top: 72.222222222%; }
-.weeks--y-markers span:nth-of-type(15) { top: 77.777777778%; }
-.weeks--y-markers span:nth-of-type(16) { top: 83.333333333%; }
-.weeks--y-markers span:nth-of-type(17) { top: 88.888888889%; }
-.weeks--y-markers span:nth-of-type(18) { top: 94.444444444%; }
-.weeks--y-markers span:nth-of-type(19) {
-  bottom: -1em;
-  left: 100%;
-  font-size: 1.5em;
-  font-weight: bold;
 }
 
 /**
@@ -267,9 +203,7 @@ body.epaper {
 }
 body.epaper .dob,
 body.epaper .credits,
-body.epaper .unit,
-body.epaper .weeks--x-arrow,
-body.epaper .weeks--y-arrow {
+body.epaper .unit {
   display: none;
 }
 body.epaper .title-box {
@@ -285,6 +219,7 @@ body.epaper .units {
 body.epaper .unit.is-active {
   display: inline;
   border: 0;
+  box-shadow: none;
   padding: 0;
   background: none;
   color: #000;
@@ -294,7 +229,8 @@ body.epaper .charts {
   flex-direction: row;
   align-items: flex-start;
   gap: 1.5rem;
-  margin: 0.75rem auto 0;
+  margin: 0.75rem 0 0;
+  width: 100%; /* not shrink-to-fit inside the column layout */
 }
 body.epaper .panel {
   width: auto;
@@ -312,11 +248,8 @@ body.epaper .chart li {
   border-color: #000;
   border-width: max(1px, 0.15vh);
 }
-body.epaper .x-axis .markers,
-body.epaper .y-axis .markers,
-body.epaper .weeks--x-label,
-body.epaper .weeks--y-label {
-  color: #000;
+body.epaper .ticks {
+  font-size: max(0.75rem, 2vh);
 }
 body.epaper .charts.months .panel,
 body.epaper .charts.years .panel {
@@ -325,6 +258,18 @@ body.epaper .charts.years .panel {
 body.epaper.scale-calendar .panel:nth-child(2),
 body.epaper.scale-felt .panel:nth-child(1) {
   display: none;
+}
+/* Weeks on a small panel: the outline is drawn inside each cell so that 90
+   rows fit. */
+body.epaper .charts.weeks .panel {
+  max-width: 330px;
+}
+body.epaper .charts.weeks .ticks span:nth-child(even) {
+  display: none; /* every ten years is enough at this height */
+}
+body.epaper .charts.weeks .chart li {
+  border: 0;
+  box-shadow: inset 0 0 0 1px #000;
 }
 /* A tall display, such as a 30 x 50 inch piece: the grids stack and everything
    scales with the width. Weeks stays side by side because each grid is tall. */

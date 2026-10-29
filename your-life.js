@@ -11,12 +11,17 @@
     //   ?scale=calendar   show only the calendar grid (or scale=felt)
     PARAMS = _readParams(),
     EPAPER = PARAMS.epaper === '1',
-    COLOR = EPAPER ? '#000' : 'red',
+    COLOR = '#000',
     // Felt time: a year counts for its share of the life lived so far (Paul Janet's
     // rule), so felt age grows with the log of real age. The count starts at the age
     // clear memory usually begins and ends at the lifespan the charts assume.
     FELT_START_AGE = 6,
-    LIFESPAN = 90;
+    LIFESPAN = 90,
+    // Rows per chart and how often to label them with an age down the side.
+    ROWS = { years: 9, months: 30, weeks: 90 },
+    TICK_EVERY = { years: 1, months: 5, weeks: 5 };
+
+  _addAgeTicks();
 
   if (EPAPER) {
     document.body.classList.add('epaper');
@@ -123,6 +128,26 @@
       } else {
         items[i].style.backgroundColor = '';
       }
+    }
+  }
+
+  function _addAgeTicks() {
+    var rows = ROWS[unitText], every = TICK_EVERY[unitText], i, chart, felt, box, span, r, age;
+    if (!rows) { return; }
+    for (i = 0; i < charts.length; i++) {
+      chart = charts[i];
+      felt = chart.getAttribute('data-scale') === 'felt';
+      box = document.createElement('div');
+      box.className = 'ticks';
+      for (r = 0; r <= rows; r += (r + every > rows && r < rows) ? rows - r : every) {
+        // Calendar rows are evenly spaced in age; felt rows follow the log rule.
+        age = felt ? FELT_START_AGE * Math.pow(LIFESPAN / FELT_START_AGE, r / rows) : r * LIFESPAN / rows;
+        span = document.createElement('span');
+        span.style.top = (r / rows * 100) + '%';
+        span.textContent = age < 10 ? String(Math.round(age * 10) / 10) : String(Math.round(age));
+        box.appendChild(span);
+      }
+      chart.insertBefore(box, chart.firstChild);
     }
   }
 

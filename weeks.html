@@ -7,22 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="weeks-favicon.png" sizes="32x32">
   <link rel="stylesheet" href="your-life.css">
-  <style>
-    body {
-      margin: 8px 8px 0 calc(3rem + 8px);
-    }
-    .charts { gap: 6rem; }
-    .panel-title { margin-bottom: 3.5rem; }
-    body.epaper { padding-left: calc(3rem + 16px); }
-    body.epaper .charts { gap: 5rem; margin-top: 3rem; }
-    body.epaper .panel-title { display: none; }
-    body.epaper .charts.weeks .panel { max-width: 230px; }
-    body.epaper.scale-calendar .charts.weeks .panel,
-    body.epaper.scale-felt .charts.weeks .panel { max-width: 250px; }
-    /* At this size a 1px border would make the cells taller than wide; draw the
-       outline inside the cell instead so 90 rows fit the panel. */
-    body.epaper .charts.weeks .chart li { border: 0; box-shadow: inset 0 0 0 1px #000; }
-  </style>
 </head>
 <body>
   <form class="dob" action="#">
@@ -41,46 +25,6 @@
     <section class="panel">
       <h2 class="panel-title">Calendar time</h2>
   <ol class="chart weeks group" data-scale="calendar">
-    <div class="x-axis">
-      <label class="weeks--x-label">Week of the Year<img src="images/arrow-right.svg" class="weeks--x-arrow"/></label>
-      <div class="markers weeks--x-markers">
-        <span>1</span>
-        <span>5</span>
-        <span>10</span>
-        <span>15</span>
-        <span>20</span>
-        <span>25</span>
-        <span>30</span>
-        <span>35</span>
-        <span>40</span>
-        <span>45</span>
-        <span>50</span>
-      </div>
-    </div>
-    <div class="y-axis">
-      <label class="weeks--y-label"><img src="images/arrow-left.svg" class="weeks--y-arrow"/>Age</label>
-      <div class="markers weeks--y-markers">
-        <span>0</span>
-        <span>5</span>
-        <span>10</span>
-        <span>15</span>
-        <span>20</span>
-        <span>25</span>
-        <span>30</span>
-        <span>35</span>
-        <span>40</span>
-        <span>45</span>
-        <span>50</span>
-        <span>55</span>
-        <span>60</span>
-        <span>65</span>
-        <span>70</span>
-        <span>75</span>
-        <span>80</span>
-        <span>85</span>
-        <span>90</span>
-      </div>
-    </div>
     <li></li>
     <li></li>
     <li></li>
@@ -4766,46 +4710,6 @@
     <section class="panel">
       <h2 class="panel-title">Felt time</h2>
   <ol class="chart weeks group" data-scale="felt">
-    <div class="x-axis">
-      <label class="weeks--x-label">Felt weeks<img src="images/arrow-right.svg" class="weeks--x-arrow"/></label>
-      <div class="markers weeks--x-markers">
-        <span>1</span>
-        <span>5</span>
-        <span>10</span>
-        <span>15</span>
-        <span>20</span>
-        <span>25</span>
-        <span>30</span>
-        <span>35</span>
-        <span>40</span>
-        <span>45</span>
-        <span>50</span>
-      </div>
-    </div>
-    <div class="y-axis">
-      <label class="weeks--y-label"><img src="images/arrow-left.svg" class="weeks--y-arrow"/>Age</label>
-      <div class="markers weeks--y-markers">
-        <span>6</span>
-        <span>7</span>
-        <span>8.1</span>
-        <span>9.4</span>
-        <span>11</span>
-        <span>13</span>
-        <span>15</span>
-        <span>17</span>
-        <span>20</span>
-        <span>23</span>
-        <span>27</span>
-        <span>31</span>
-        <span>36</span>
-        <span>42</span>
-        <span>49</span>
-        <span>57</span>
-        <span>67</span>
-        <span>77</span>
-        <span>90</span>
-      </div>
-    </div>
     <li></li>
     <li></li>
     <li></li>
