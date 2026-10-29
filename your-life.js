@@ -17,11 +17,21 @@
     // clear memory usually begins and ends at the lifespan the charts assume.
     FELT_START_AGE = 6,
     LIFESPAN = 90,
-    // Rows per chart and how often to label them with an age down the side.
+    // Axes: rows per chart and how often to label them with an age down the
+    // side; columns per row, which ones to number across the top, and the name
+    // of the top axis on the calendar and felt grids.
     ROWS = { years: 9, months: 30, weeks: 90 },
-    TICK_EVERY = { years: 1, months: 5, weeks: 5 };
+    TICK_EVERY = { years: 1, months: 5, weeks: 5 },
+    COLS = { years: 10, months: 36, weeks: 52 },
+    COL_TICKS = {
+      years: [1, 5, 10],
+      months: [1, 6, 12, 18, 24, 30, 36],
+      weeks: [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    },
+    COL_LABEL = { years: 'Year of the decade', months: 'Month', weeks: 'Week of the year' },
+    FELT_COL_LABEL = { years: 'Felt years', months: 'Felt months', weeks: 'Felt weeks' };
 
-  _addAgeTicks();
+  _addAxes();
 
   if (EPAPER) {
     document.body.classList.add('epaper');
@@ -131,16 +141,39 @@
     }
   }
 
-  function _addAgeTicks() {
-    var rows = ROWS[unitText], every = TICK_EVERY[unitText], i, chart, felt, box, span, r, age;
+  function _addAxes() {
+    var rows = ROWS[unitText], every = TICK_EVERY[unitText], cols = COLS[unitText];
+    var i, j, chart, felt, box, span, r, age;
     if (!rows) { return; }
     for (i = 0; i < charts.length; i++) {
       chart = charts[i];
       felt = chart.getAttribute('data-scale') === 'felt';
+
+      // Across the top: the axis name and the column numbers, centred on their columns.
+      box = document.createElement('div');
+      box.className = 'x-axis';
+      span = document.createElement('span');
+      span.className = 'x-label';
+      span.textContent = felt ? FELT_COL_LABEL[unitText] : COL_LABEL[unitText];
+      box.appendChild(span);
+      for (j = 0; j < COL_TICKS[unitText].length; j++) {
+        span = document.createElement('span');
+        span.className = 'tick';
+        span.style.left = ((COL_TICKS[unitText][j] - 0.5) / cols * 100) + '%';
+        span.textContent = COL_TICKS[unitText][j];
+        box.appendChild(span);
+      }
+      chart.insertBefore(box, chart.firstChild);
+
+      // Down the side: "Age" and the age at each labelled row boundary. Calendar
+      // rows are evenly spaced in age; felt rows follow the log rule.
+      span = document.createElement('span');
+      span.className = 'y-label';
+      span.textContent = 'Age';
+      chart.insertBefore(span, chart.firstChild);
       box = document.createElement('div');
       box.className = 'ticks';
       for (r = 0; r <= rows; r += (r + every > rows && r < rows) ? rows - r : every) {
-        // Calendar rows are evenly spaced in age; felt rows follow the log rule.
         age = felt ? FELT_START_AGE * Math.pow(LIFESPAN / FELT_START_AGE, r / rows) : r * LIFESPAN / rows;
         span = document.createElement('span');
         span.style.top = (r / rows * 100) + '%';
